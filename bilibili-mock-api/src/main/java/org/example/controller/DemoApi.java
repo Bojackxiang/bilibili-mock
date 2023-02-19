@@ -11,7 +11,6 @@ public class DemoApi {
     @Autowired
     private DemoService demoService;
 
-
     @GetMapping("/demo")
     public long query(Integer id) {
         return demoService.getDemo(id);
