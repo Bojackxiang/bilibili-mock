@@ -1,4 +1,4 @@
-package org.example.service.handler;
+package org.example.handler;
 
 import org.example.dao.domain.JsonResponse;
 import org.example.exception.ConditionException;

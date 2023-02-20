@@ -1,4 +1,4 @@
-package org.example.service.utils;
+package org.example.utils;
 
 import org.apache.commons.codec.digest.DigestUtils;
 

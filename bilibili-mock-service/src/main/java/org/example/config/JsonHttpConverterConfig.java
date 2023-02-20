@@ -1,4 +1,4 @@
-package org.example.service.config;
+package org.example.config;
 
 import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.alibaba.fastjson.support.config.FastJsonConfig;
