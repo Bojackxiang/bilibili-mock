@@ -10,7 +10,6 @@ public class DemoService {
     private DemoDao demoDao;
 
     public Integer getDemo(Integer id) {
-        System.out.println("service");
         return demoDao.query(id);
     }
 }

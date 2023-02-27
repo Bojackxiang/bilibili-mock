@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD MAPPER 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.example.dao.domain.UserDao">
+    <!---->
+    <!--SELECT USER BY PHONE-->
+    <!---->
+    <select id="getUserByPhone"
+            parameterType="java.lang.String"
+            resultType="org.example.dao.domain.User">
+        select *
+        from t_user
+        where phone = #{phone}
+    </select>
+
+
+    <!---->
+    <!--ADDING USER-->
+    <!---->
+    <insert id="addUser"
+            parameterType="org.example.dao.domain.User"
+            useGeneratedKeys="true"
+            keyProperty="id">
+        insert into t_user(phone,
+                           email,
+                           salt,
+                           password,
+                           createTime)
+        values (#{phone},
+                #{email},
+                #{salt},
+                #{password},
+                #{createTime})
+    </insert>
+
+
+    <!---->
+    <!--ADDING USER INFO-->
+    <!---->
+    <insert id="addUserInfo"
+            parameterType="org.example.dao.domain.UserInfo">
+        insert into t_user_info(userId,
+                                nick,
+                                gender,
+                                birth,
+                                createTime)
+        values (#{userId},
+                #{nick},
+                #{gender},
+                #{birth},
+                #{createTime})
+    </insert>
+
+
+    <!---->
+    <!--SELECT USERINFO BY USER ID-->
+    <!---->
+    <select id="getUserInfoByUserId"
+            parameterType="java.lang.Long"
+            resultType="org.example.dao.domain.UserInfo">
+        select *
+        from t_user_info
+        where userId = #{userId}
+    </select>
+
+    <!---->
+    <!--SELECT USER BY USER ID-->
+    <!---->
+    <select id="getUserById"
+            parameterType="java.lang.Long"
+            resultType="org.example.dao.domain.User">
+        select *
+        from t_user
+        where id = #{id}
+    </select>
+</mapper>
