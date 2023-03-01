@@ -7,10 +7,7 @@ import org.example.helpers.UserVerifyTokenHelper;
 import org.example.service.UserService;
 import org.example.utils.RSAUtil;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 public class UserApi {
@@ -49,6 +46,15 @@ public class UserApi {
         Long userId = userVerifyTokenHelper.getCurrentUserIdByToken();
         User user = userService.getUserInfoByUserId(userId);
         return new JsonResponse<>(user);
+    }
+
+
+    @PutMapping("/update-profile")
+    public JsonResponse updateUserInfo(@RequestBody UserInfo userInfoInput) {
+        Long userId = userVerifyTokenHelper.getCurrentUserIdByToken();
+        UserInfo userInfo = userService.updateUserInfo(userId, userInfoInput);
+
+        return JsonResponse.success();
     }
 
 }

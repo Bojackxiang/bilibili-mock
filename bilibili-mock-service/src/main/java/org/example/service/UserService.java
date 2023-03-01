@@ -6,6 +6,7 @@ import org.example.constant.UserConstants;
 import org.example.dao.domain.User;
 import org.example.dao.domain.UserDao;
 import org.example.dao.domain.UserInfo;
+import org.example.dao.domain.UserInfoDao;
 import org.example.exception.ConditionException;
 import org.example.helper.UserAuthHelper;
 import org.example.utils.MD5Util;
@@ -19,6 +20,9 @@ import java.util.Date;
 public class UserService {
     @Autowired
     private UserDao userDao;
+
+    @Autowired
+    private UserInfoDao userInfoDao;
 
     public UserService() {
     }
@@ -103,5 +107,21 @@ public class UserService {
         user.setUserInfo(userInfo);
 
         return user;
+    }
+
+    public UserInfo updateUserInfo(Long userId, UserInfo userInfoInput) {
+        UserInfo userInfo = userDao.getUserInfoByUserId(userId);
+        if (userInfo == null) {
+            throw new ConditionException(
+                    AuthErrorEnum.AUTH_ERROR_USER_INFO_NOT_EXISTED.getCode(),
+                    AuthErrorEnum.AUTH_ERROR_USER_INFO_NOT_EXISTED.getMessage());
+        }
+
+
+
+        // UPDATE USER INFO
+        userInfo.setUpdateTime(new Date());
+        userInfoDao.updateUserInfo(userInfo);
+        return userInfo;
     }
 }
