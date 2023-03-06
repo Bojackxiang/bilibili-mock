@@ -13,4 +13,6 @@ public interface UserDao {
     User getUserById(Long userId);
 
     public User getUserByPhone(String phone);
+
+    void updateUserById(User user);
 }

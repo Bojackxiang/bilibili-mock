@@ -1,6 +1,27 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD MAPPER 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="org.example.dao.domain.UserDao">
+    <update id="updateUserById"
+            parameterType="org.example.dao.domain.User"
+    >
+        update t_user
+        set
+        <if test=" phone != null and phone != ''">
+            phone = #{phone},
+        </if>
+        <if test=" email != null and email != ''">
+            email = #{email},
+        </if>
+        <if test=" salt != null and salt != ''">
+            salt = #{salt},
+        </if>
+        <if test=" password != null and password != ''">
+            password = #{password},
+        </if>
+        updateTime = #{updateTime}
+        where id = #{id}
+
+    </update>
     <!---->
     <!--SELECT USER BY PHONE-->
     <!---->

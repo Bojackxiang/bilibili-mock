@@ -103,25 +103,36 @@ public class UserService {
                     AuthErrorEnum.AUTH_ERROR_USER_NOT_EXISTED.getCode(),
                     AuthErrorEnum.AUTH_ERROR_USER_NOT_EXISTED.getMessage());
         }
+        System.out.println("ger user info by user id userId = " + userId);
         UserInfo userInfo = userDao.getUserInfoByUserId(userId);
+        System.out.println("userInfo = " + userInfo.toString());
         user.setUserInfo(userInfo);
 
         return user;
     }
 
-    public UserInfo updateUserInfo(Long userId, UserInfo userInfoInput) {
-        UserInfo userInfo = userDao.getUserInfoByUserId(userId);
-        if (userInfo == null) {
+    public UserInfo updateUserInfo(UserInfo userInfoInput) {
+        if (userInfoInput == null) {
             throw new ConditionException(
                     AuthErrorEnum.AUTH_ERROR_USER_INFO_NOT_EXISTED.getCode(),
                     AuthErrorEnum.AUTH_ERROR_USER_INFO_NOT_EXISTED.getMessage());
         }
 
-
-
         // UPDATE USER INFO
-        userInfo.setUpdateTime(new Date());
-        userInfoDao.updateUserInfo(userInfo);
-        return userInfo;
+        System.out.println("userInfoInput.toString() = " + userInfoInput.toString());
+        userInfoInput.setUpdateTime(new Date());
+        userInfoDao.updateUserInfo(userInfoInput);
+        return userInfoInput;
+    }
+
+    public User getUserById(Long userId) {
+        return userDao.getUserById(userId);
+    }
+
+    public void updateUserById(User user) {
+        Date updatedTime = new Date();
+        System.out.println("user = " + user.toString());
+        user.setUpdateTime(updatedTime);
+        userDao.updateUserById(user);
     }
 }

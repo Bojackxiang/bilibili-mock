@@ -1,13 +1,17 @@
 package org.example.controller;
 
+import org.example.constant.AuthErrorEnum;
 import org.example.dao.domain.JsonResponse;
 import org.example.dao.domain.User;
 import org.example.dao.domain.UserInfo;
+import org.example.exception.ConditionException;
 import org.example.helpers.UserVerifyTokenHelper;
 import org.example.service.UserService;
 import org.example.utils.RSAUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import javax.websocket.server.PathParam;
 
 @RestController
 public class UserApi {
@@ -48,12 +52,34 @@ public class UserApi {
         return new JsonResponse<>(user);
     }
 
+    @PutMapping("/user-details")
+    public JsonResponse<String> updateUser(@RequestBody User updatedUser) {
+        Long userId = userVerifyTokenHelper.verifyUserIdByToken();
+
+        updatedUser.setId(userId);
+        userService.updateUserById(updatedUser);
+
+        return JsonResponse.success();
+    }
+
 
     @PutMapping("/update-profile")
     public JsonResponse updateUserInfo(@RequestBody UserInfo userInfoInput) {
+        // CHECK IF USERINFO WITH SPECIFIC USER ID EXISTS
         Long userId = userVerifyTokenHelper.getCurrentUserIdByToken();
-        UserInfo userInfo = userService.updateUserInfo(userId, userInfoInput);
+        System.out.println("userId = " + userId);
+        User user = userService.getUserInfoByUserId(userId);
+        UserInfo userInfo = user.getUserInfo();
+        System.out.println("userInfo = " + userInfo.toString());
+        if (userInfo == null) {
+            throw new ConditionException(
+                    AuthErrorEnum.AUTH_ERROR_USER_INFO_NOT_EXISTED.getCode(),
+                    AuthErrorEnum.AUTH_ERROR_USER_INFO_NOT_EXISTED.getMessage());
+        }
 
+        // UPDATE THE USER INFO CLASS AND THE DATABASE
+        userInfoInput.setUserId(userId);
+        userService.updateUserInfo(userInfoInput);
         return JsonResponse.success();
     }
 

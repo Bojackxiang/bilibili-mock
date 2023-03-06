@@ -113,4 +113,21 @@ public class UserInfo {
     public void setFollowed(Boolean followed) {
         this.followed = followed;
     }
+
+    @Override
+    public String toString() {
+        return "UserInfo{" +
+                "id=" + id +
+                ", userId=" + userId +
+                ", nick='" + nick + '\'' +
+                ", avatar='" + avatar + '\'' +
+                ", sign='" + sign + '\'' +
+                ", gender='" + gender + '\'' +
+                ", birth='" + birth + '\'' +
+                ", createTime=" + createTime +
+                ", updateTime=" + updateTime +
+                ", followed=" + followed +
+                ", user=" + user +
+                '}';
+    }
 }

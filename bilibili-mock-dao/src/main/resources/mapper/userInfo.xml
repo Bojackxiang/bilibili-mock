@@ -20,7 +20,7 @@
             birth = #{birth},
         </if>
         updateTime = #{updateTime}
-        where id = #{id}
+        where userId = #{userId}
     </update>
 
 </mapper>

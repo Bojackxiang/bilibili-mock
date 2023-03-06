@@ -25,7 +25,7 @@ public class TokenUtil {
             throw new RuntimeException(e);
         }
         calendar.setTime(new Date());
-        calendar.add(Calendar.SECOND, 30);
+        calendar.add(Calendar.MINUTE, 30);
         Date expireDate = calendar.getTime();
 
         return JWT.create()

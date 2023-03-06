@@ -82,4 +82,18 @@ public class User {
     public void setUpdateTime(Date updateTime) {
         this.updateTime = updateTime;
     }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", phone='" + phone + '\'' +
+                ", email='" + email + '\'' +
+                ", password='" + password + '\'' +
+                ", salt='" + salt + '\'' +
+                ", createTime=" + createTime +
+                ", updateTime=" + updateTime +
+                ", userInfo=" + userInfo +
+                '}';
+    }
 }
