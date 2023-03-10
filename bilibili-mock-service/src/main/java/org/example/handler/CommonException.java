@@ -1,6 +1,6 @@
 package org.example.handler;
 
-import org.example.dao.domain.JsonResponse;
+import org.example.domain.JsonResponse;
 import org.example.exception.ConditionException;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;

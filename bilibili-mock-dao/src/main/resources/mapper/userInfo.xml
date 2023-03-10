@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD MAPPER 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="org.example.dao.domain.UserInfoDao">
+<mapper namespace="org.example.dao.UserInfoDao">
 
     <!---->
     <!--ADDING USER-->
     <!---->
     <update id="updateUserInfo"
-            parameterType="org.example.dao.domain.UserInfo"
+            parameterType="org.example.domain.UserInfo"
     >
         update t_user_info
         set

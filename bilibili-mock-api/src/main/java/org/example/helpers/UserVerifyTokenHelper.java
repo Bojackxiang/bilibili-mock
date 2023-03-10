@@ -1,9 +1,8 @@
 package org.example.helpers;
 
-import org.apache.tomcat.util.http.fileupload.RequestContext;
 import org.example.TokenUtils.TokenUtil;
 import org.example.constant.AuthErrorEnum;
-import org.example.dao.domain.User;
+import org.example.domain.User;
 import org.example.exception.ConditionException;
 import org.example.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,8 +30,9 @@ public class UserVerifyTokenHelper {
 
     /**
      * 通过 token 获取 user id 并且在 数据库中查找 该 user id 是否存在
-     * @return long userId
+     * @return
      */
+    //
     public long verifyUserIdByToken() {
         long userId = getCurrentUserIdByToken();
         User user = userService.getUserById(userId);

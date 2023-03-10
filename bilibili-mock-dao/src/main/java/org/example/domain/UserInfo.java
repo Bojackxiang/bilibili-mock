@@ -1,4 +1,4 @@
-package org.example.dao.domain;
+package org.example.domain;
 
 import java.util.Date;
 

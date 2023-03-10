@@ -11,5 +11,11 @@ public class UserConstants {
 
     public static final String DEFAULT_NICKNAME = "bilibili";
 
+    public static final int USER_FOLLOWING_GROUP_TYPE_DEFAULT = 2;
+
+    public static final int USER_FOLLOWING_GROUP_TYPE_SPECIAL = 0;
+
+    public static final int USER_FOLLOWING_GROUP_TYPE_QUIET = 1;
+
 
 }

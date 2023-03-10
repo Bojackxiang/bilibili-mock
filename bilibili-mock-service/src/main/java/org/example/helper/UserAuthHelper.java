@@ -2,8 +2,8 @@ package org.example.helper;
 
 import com.mysql.cj.util.StringUtils;
 import org.example.constant.AuthErrorEnum;
-import org.example.dao.domain.User;
-import org.example.dao.domain.UserDao;
+import org.example.domain.User;
+import org.example.dao.UserDao;
 import org.example.exception.ConditionException;
 import org.example.utils.RSAUtil;
 

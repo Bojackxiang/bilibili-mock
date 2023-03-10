@@ -1,17 +1,15 @@
 package org.example.controller;
 
 import org.example.constant.AuthErrorEnum;
-import org.example.dao.domain.JsonResponse;
-import org.example.dao.domain.User;
-import org.example.dao.domain.UserInfo;
+import org.example.domain.JsonResponse;
+import org.example.domain.User;
+import org.example.domain.UserInfo;
 import org.example.exception.ConditionException;
 import org.example.helpers.UserVerifyTokenHelper;
 import org.example.service.UserService;
 import org.example.utils.RSAUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-
-import javax.websocket.server.PathParam;
 
 @RestController
 public class UserApi {

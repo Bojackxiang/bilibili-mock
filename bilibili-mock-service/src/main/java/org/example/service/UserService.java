@@ -3,14 +3,13 @@ package org.example.service;
 import org.example.TokenUtils.TokenUtil;
 import org.example.constant.AuthErrorEnum;
 import org.example.constant.UserConstants;
-import org.example.dao.domain.User;
-import org.example.dao.domain.UserDao;
-import org.example.dao.domain.UserInfo;
-import org.example.dao.domain.UserInfoDao;
+import org.example.domain.User;
+import org.example.dao.UserDao;
+import org.example.domain.UserInfo;
+import org.example.dao.UserInfoDao;
 import org.example.exception.ConditionException;
 import org.example.helper.UserAuthHelper;
 import org.example.utils.MD5Util;
-import org.example.utils.RSAUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

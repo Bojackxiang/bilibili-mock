@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD MAPPER 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="org.example.dao.domain.UserDao">
+<mapper namespace="org.example.dao.UserDao">
     <update id="updateUserById"
-            parameterType="org.example.dao.domain.User"
+            parameterType="org.example.domain.User"
     >
         update t_user
         set
@@ -27,7 +27,7 @@
     <!---->
     <select id="getUserByPhone"
             parameterType="java.lang.String"
-            resultType="org.example.dao.domain.User">
+            resultType="org.example.domain.User">
         select *
         from t_user
         where phone = #{phone}
@@ -38,7 +38,7 @@
     <!--ADDING USER-->
     <!---->
     <insert id="addUser"
-            parameterType="org.example.dao.domain.User"
+            parameterType="org.example.domain.User"
             useGeneratedKeys="true"
             keyProperty="id">
         insert into t_user(phone,
@@ -58,7 +58,7 @@
     <!--ADDING USER INFO-->
     <!---->
     <insert id="addUserInfo"
-            parameterType="org.example.dao.domain.UserInfo">
+            parameterType="org.example.domain.UserInfo">
         insert into t_user_info(userId,
                                 nick,
                                 gender,
@@ -77,7 +77,7 @@
     <!---->
     <select id="getUserInfoByUserId"
             parameterType="java.lang.Long"
-            resultType="org.example.dao.domain.UserInfo">
+            resultType="org.example.domain.UserInfo">
         select *
         from t_user_info
         where userId = #{userId}
@@ -88,7 +88,7 @@
     <!---->
     <select id="getUserById"
             parameterType="java.lang.Long"
-            resultType="org.example.dao.domain.User">
+            resultType="org.example.domain.User">
         select *
         from t_user
         where id = #{id}
