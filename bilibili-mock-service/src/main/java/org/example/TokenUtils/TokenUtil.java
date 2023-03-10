@@ -31,7 +31,7 @@ public class TokenUtil {
         return JWT.create()
                 .withKeyId(String.valueOf(userId))
                 .withIssuer(ISSUER)
-                .withExpiresAt(calendar.getTime())
+                .withExpiresAt(expireDate)
                 .sign(algorithm);
     }
 

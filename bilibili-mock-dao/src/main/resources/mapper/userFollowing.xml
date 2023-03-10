@@ -27,4 +27,13 @@
           and followingId = #{followedUserId}
     </delete>
 
+    <!--==============================-->
+    <!--========delete following======-->
+    <!--==============================-->
+    <select id="getUserFollowing" parameterType="java.lang.Long" resultType="org.example.domain.UserFollowing">
+        select *
+        from t_user_following
+        where userId = #{userId}
+    </select>
+
 </mapper>

@@ -1,18 +1,24 @@
 package org.example.service;
 
 import org.example.constant.AuthErrorEnum;
+import org.example.constant.Constants;
 import org.example.constant.GroupErrorEnum;
 import org.example.constant.UserConstants;
 import org.example.dao.UserFollowingDao;
 import org.example.domain.FollowingGroup;
 import org.example.domain.User;
 import org.example.domain.UserFollowing;
+import org.example.domain.UserInfo;
 import org.example.exception.ConditionException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class UserFollowingService {
@@ -66,5 +72,60 @@ public class UserFollowingService {
         userFollowingDao.addUserFollowing(userFollowing);
 
 
+    }
+
+    /**
+     * 获取到当前用户的关注的所有人的信息
+     *
+     * @param userId
+     * @return
+     */
+    public List<FollowingGroup> getUserFollowing(long userId) {
+        // 获取到当前用户的关注的所有人的信息
+        List<UserFollowing> userFollowingList = userFollowingDao.getUserFollowing(userId);
+        // 将被关注的所有人的 id 拿到
+        Set<Long> followedUserIdSet = userFollowingList.stream().map(UserFollowing::getFollowingId).collect(Collectors.toSet());
+        System.out.println("followedUserIdSet = " + followedUserIdSet.toString());
+
+        // 获取被关注的人 user_info 的信息
+        if (followedUserIdSet.size() == 0) {
+            throw new ConditionException(
+                    GroupErrorEnum.GROUP_ERROR_NO_FOLLOWING.getCode(),
+                    GroupErrorEnum.GROUP_ERROR_NO_FOLLOWING.getMessage());
+        }
+        // -- 被关注的人的list信息
+        List<UserInfo> userInfoList = userService.getUserInfoByUserIds(followedUserIdSet);
+        for (UserFollowing userFollowing : userFollowingList) {
+            for (UserInfo userInfo : userInfoList) {
+                if (userFollowing.getFollowingId().equals(userInfo.getUserId())) {
+                    userFollowing.setUserInfo(userInfo);
+                }
+            }
+        }
+
+        // 对被关注的人进行分组 并且返回
+        List<FollowingGroup> followingGroupList = followingGroupService.getUserFollowingGroup(userId);
+
+        FollowingGroup allGroup = new FollowingGroup();
+        allGroup.setName(Constants.FOLLOWING_GROUP_ALL);
+        allGroup.setFollowingUserInfoList(userInfoList);
+        List<FollowingGroup> result = new ArrayList<>();
+        // 全部关注
+        result.add(allGroup);
+
+
+        for (FollowingGroup followingGroup : followingGroupList) {
+            List<UserInfo> userInfoList1 = new ArrayList<>();
+            for (UserFollowing userFollowing : userFollowingList) {
+                if (userFollowing.getGroupId().equals(Long.valueOf(followingGroup.getType()))) {
+
+                    userInfoList1.add(userFollowing.getUserInfo());
+                }
+            }
+            followingGroup.setFollowingUserInfoList(userInfoList1);
+            result.add(followingGroup);
+        }
+
+        return result;
     }
 }

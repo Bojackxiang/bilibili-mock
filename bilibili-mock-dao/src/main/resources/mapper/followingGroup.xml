@@ -4,7 +4,8 @@
     <!--==============================-->
     <!--GET BY FOLLOWING GROUP BY TYPE-->
     <!--==============================-->
-    <select id="getByType" parameterType="java.lang.Long" resultType="org.example.domain.FollowingGroup">
+    <select id="getByType" parameterType="java.lang.Long"
+            resultType="org.example.domain.FollowingGroup">
         select *
         from t_following_group
         where `type` = #{integer}
@@ -14,10 +15,23 @@
     <!--============================-->
     <!--GET BY FOLLOWING GROUP BY ID-->
     <!--============================-->
-    <select id="getById" parameterType="java.lang.Long" resultType="org.example.domain.FollowingGroup">
+    <select id="getById" parameterType="java.lang.Long"
+            resultType="org.example.domain.FollowingGroup">
         select *
         from t_following_group
         where id = #{id}
+    </select>
+
+    <!--============================-->
+    <!--====== 获取用户关注分类 =======-->
+    <!--============================-->
+    <select id="getUserFollowingGroup"
+            parameterType="java.lang.Long"
+            resultType="org.example.domain.FollowingGroup">
+        select *
+        from t_following_group
+        where userId = #{userId}
+           or `type` in ('0', '1', '2')
     </select>
 
 </mapper>

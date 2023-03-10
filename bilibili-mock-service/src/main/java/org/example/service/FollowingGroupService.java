@@ -6,6 +6,8 @@ import org.example.domain.FollowingGroup;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class FollowingGroupService {
 
@@ -21,4 +23,7 @@ public class FollowingGroupService {
     }
 
 
+    public List<FollowingGroup> getUserFollowingGroup(long userId) {
+        return followingGroupDao.getUserFollowingGroup(userId);
+    }
 }
