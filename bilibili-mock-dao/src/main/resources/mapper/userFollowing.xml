@@ -28,12 +28,21 @@
     </delete>
 
     <!--==============================-->
-    <!--========delete following======-->
+    <!--========select following======-->
     <!--==============================-->
     <select id="getUserFollowing" parameterType="java.lang.Long" resultType="org.example.domain.UserFollowing">
         select *
         from t_user_following
         where userId = #{userId}
+    </select>
+
+    <!--==============================-->
+    <!--==========get user fans=======-->
+    <!--==============================-->
+    <select id="getUserFans" parameterType="java.lang.Long" resultType="org.example.domain.UserFollowing">
+        select *
+        from t_user_following
+        where followingId = #{userId}
     </select>
 
 </mapper>

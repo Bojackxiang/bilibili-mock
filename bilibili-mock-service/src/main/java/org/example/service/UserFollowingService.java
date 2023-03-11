@@ -128,4 +128,38 @@ public class UserFollowingService {
 
         return result;
     }
+
+    public List<UserFollowing> getUserFans(Long userId) {
+        // 获取粉丝列表并检查
+        List<UserFollowing> userFans = userFollowingDao.getUserFans(userId);
+        Set<Long> fansUserIdSet = userFans.stream().map(UserFollowing::getUserId).collect(Collectors.toSet());
+        if (userFans.size() == 0) {
+            throw new ConditionException(
+                    GroupErrorEnum.GROUP_ERROR_NO_FOLLOWING.getCode(),
+                    GroupErrorEnum.GROUP_ERROR_NO_FOLLOWING.getMessage());
+        }
+
+        // 获取关注列表
+        List<UserFollowing> userFollowingList = userFollowingDao.getUserFollowing(userId);
+
+        // 获取粉丝信息
+        List<UserInfo> userInfoList = userService.getUserInfoByUserIds(fansUserIdSet);
+
+        // 给粉丝进行 userInfo 的赋值
+        for (UserFollowing userFan : userFans) {
+            for (UserInfo userInfo : userInfoList) {
+                if (userFan.getUserId().equals(userInfo.getUserId())) {
+                    userFan.setUserInfo(userInfo);
+                }
+            }
+            for (UserFollowing subscribe : userFollowingList) {
+                if (subscribe.getFollowingId().equals(userFan.getUserId())) {
+                    userFan.getUserInfo().setFollowed(true);
+                }
+            }
+
+        }
+
+        return userFans;
+    }
 }
