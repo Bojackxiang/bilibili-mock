@@ -1,6 +1,20 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD MAPPER 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="org.example.dao.FollowingGroupDao">
+
+    <!--==============================-->
+    <!--GET BY FOLLOWING GROUP BY TYPE-->
+    <!--==============================-->
+    <insert id="addFollowingGroup"
+            parameterType="org.example.domain.UserFollowing"
+            useGeneratedKeys="true"
+            keyProperty="id">
+        insert into t_following_group
+            (userId, `type`, name, createTime)
+        values (#{userId}, #{type}, #{name}, #{createTime});
+    </insert>
+
+
     <!--==============================-->
     <!--GET BY FOLLOWING GROUP BY TYPE-->
     <!--==============================-->
@@ -32,6 +46,17 @@
         from t_following_group
         where userId = #{userId}
            or `type` in ('0', '1', '2')
+    </select>
+
+    <!--============================-->
+    <!--======== 获取用户全部 ========-->
+    <!--============================-->
+    <select id="getAllUserFollowingGroup"
+            parameterType="java.lang.Long"
+            resultType="org.example.domain.FollowingGroup">
+        select *
+        from t_following_group
+        where userId = #{userId};
     </select>
 
 </mapper>

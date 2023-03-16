@@ -1,17 +1,14 @@
 package org.example.controller;
 
+import com.alibaba.fastjson.JSONObject;
 import org.example.Configs.AppConfig;
-import org.example.domain.FollowingGroup;
-import org.example.domain.JsonResponse;
-import org.example.domain.UserFollowing;
+import org.example.domain.*;
 import org.example.helpers.UserVerifyTokenHelper;
 import org.example.service.FollowingGroupService;
 import org.example.service.UserFollowingService;
+import org.example.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -29,6 +26,9 @@ public class UserFollowingApi {
 
     @Autowired
     private FollowingGroupService followingGroupService;
+
+    @Autowired
+    private UserService userService;
 
     @GetMapping("/user/followings")
     public JsonResponse<List<FollowingGroup>> getFollowings() {
@@ -67,5 +67,66 @@ public class UserFollowingApi {
         userFollowing.setUserId(userId);
         userFollowingService.addUserFollowing(userFollowing);
         return JsonResponse.success();
+    }
+
+    @PostMapping("/user/add-user-folllowing-group")
+    public JsonResponse<Integer> addUserFollowingGroup(@RequestBody FollowingGroup followingGroup) {
+        long userId;
+        boolean developmentMode = appConfig.isDevelopment();
+        if (developmentMode) {
+            userId = 17;
+        } else {
+            userId = userVerifyTokenHelper.getCurrentUserIdByToken();
+        }
+
+        followingGroup.setUserId(userId);
+        Integer newCreatedFollowingGroup = userFollowingService.addFollowingGroup(followingGroup);
+        return new JsonResponse(newCreatedFollowingGroup);
+    }
+
+
+    /**
+     * 获取某个用户当前全部的关注列表
+     *
+     * @return
+     */
+    @GetMapping("/user/following-groups")
+    public JsonResponse<List<FollowingGroup>> getUserFollowingGroups() {
+        long userId;
+        boolean developmentMode = appConfig.isDevelopment();
+        if (developmentMode) {
+            userId = 17;
+        } else {
+            userId = userVerifyTokenHelper.getCurrentUserIdByToken();
+        }
+
+        List<FollowingGroup> userFollowingGroup = userFollowingService.getAllUserFollowingGroup(userId);
+        return new JsonResponse(userFollowingGroup);
+    }
+
+
+    @GetMapping("/user/user-infos-v2")
+    public JsonResponse<PageResults<UserInfo>> pageListUserInfo(
+            @RequestParam int no,
+            @RequestParam int size,
+            @RequestParam String nick) {
+        long userId;
+        boolean developmentMode = appConfig.isDevelopment();
+        if (developmentMode) {
+            userId = 17;
+        } else {
+            userId = userVerifyTokenHelper.getCurrentUserIdByToken();
+        }
+
+        JSONObject params = new JSONObject();
+        params.put("userId", userId);
+        params.put("no", no);
+        params.put("size", size);
+        params.put("nick", nick);
+
+        PageResults<UserInfo> result = userService.pageListUserInfos(params);
+
+        return new JsonResponse<>(result);
+
     }
 }

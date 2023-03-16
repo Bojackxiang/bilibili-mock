@@ -93,4 +93,19 @@
         from t_user
         where id = #{id}
     </select>
+
+    <!---->
+    <!-- select user info by page number-->
+    <!---->
+    <select id="pageCountUserInfo"
+            parameterType="java.util.Map"
+            resultType="java.lang.Integer">
+        select count(1)
+        from t_user_info
+        where 1 = 1
+        <if test="nick != null and nick != ''">
+            and nick like '%${nick}%')
+        </if>
+
+    </select>
 </mapper>

@@ -71,7 +71,6 @@ public class UserFollowingService {
         userFollowing.setCreateTime(new Date());
         userFollowingDao.addUserFollowing(userFollowing);
 
-
     }
 
     /**
@@ -161,5 +160,15 @@ public class UserFollowingService {
         }
 
         return userFans;
+    }
+
+    public Integer addFollowingGroup(FollowingGroup followingGroup) {
+        followingGroup.setCreateTime(new Date());
+        followingGroup.setType(Constants.FOLLOWING_USER_CREATED_TYPE);
+        return followingGroupService.addFollowingGroup(followingGroup);
+    }
+
+    public List<FollowingGroup> getAllUserFollowingGroup(long userId) {
+        return followingGroupService.getAllUserFollowingGroup(userId);
     }
 }

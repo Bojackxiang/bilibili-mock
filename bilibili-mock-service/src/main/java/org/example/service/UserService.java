@@ -1,8 +1,10 @@
 package org.example.service;
 
+import com.alibaba.fastjson.JSONObject;
 import org.example.TokenUtils.TokenUtil;
 import org.example.constant.AuthErrorEnum;
 import org.example.constant.UserConstants;
+import org.example.domain.PageResults;
 import org.example.domain.User;
 import org.example.dao.UserDao;
 import org.example.domain.UserInfo;
@@ -13,6 +15,7 @@ import org.example.utils.MD5Util;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
@@ -139,5 +142,28 @@ public class UserService {
 
     public List<UserInfo> getUserInfoByUserIds(Set<Long> userIdList) {
         return userInfoDao.getUserInfoByUserIds(userIdList);
+    }
+
+    public PageResults<UserInfo> pageListUserInfos(JSONObject params) {
+        Integer no = params.getInteger("no");
+        Integer size = params.getInteger("size");
+        Long userId = params.getLong("userId");
+        String nick = params.getString("nick");
+
+        params.put("start", (no - 1) * size);
+        params.put("limit", size);
+
+        Integer total = userDao.pageCountUserInfo(params);
+        List<UserInfo> userInfoList = new ArrayList<>();
+        if(total > 0) {
+            userInfoList = userInfoDao.pageListUserInfo(params);
+        }
+
+        return new PageResults<>(total, userInfoList);
+
+
+
+
+
     }
 }
