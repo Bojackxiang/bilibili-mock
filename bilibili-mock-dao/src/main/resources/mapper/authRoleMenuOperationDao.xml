@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD MAPPER 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.example.dao.AuthRoleMenuOperationDao">
+
+    <resultMap id="AuthMenuOperationResultMap"
+               type="org.example.domain.authorities.AuthRoleMenu">
+        <id column="id" property="id"/>
+        <id column="roleId" property="roleId"/>
+        <id column="menuId" property="menuId"/>
+        <association property="authMenu" javaType="org.example.domain.authorities.AuthMenu">
+            <id column="name" property="name"/>
+            <id column="code" property="code"/>
+        </association>
+    </resultMap>
+
+    <!-- 一个 class A 中 嵌套这个 class B-->
+    <!--    通过连表查询的时候，A和B都能一起出来-->
+    <!--    然后江帆蝴蝶数据和上面的 resultMap 里面的信息一一比对-->
+    <!--    最后法诺一个 完整的 class-->
+    <select id="getRoleMenuOperationByRoleIdSet"
+            parameterType="java.util.Set"
+            resultMap="AuthMenuOperationResultMap">
+        SELECT *
+        FROM t_auth_role_menu arm
+        LEFT JOIN
+        t_auth_menu am
+        ON arm.menuId = am.id
+        WHERE
+        arm.roleId IN
+        <foreach item="roleId" index="index" collection="roleIdSet" open="(" separator="," close=")">
+            #{roleId}
+        </foreach>
+    </select>
+</mapper>

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD MAPPER 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.example.dao.UserRoleDao">
+
+    <select
+            id="getUserRoleByUserId"
+            parameterType="java.lang.Long"
+            resultType="org.example.domain.authorities.UserRole">
+        SELECT
+            tur.*,
+            tar.name roleName,
+            tar.code roleCode
+        FROM
+            t_user_role tur
+        LEFT JOIN
+            t_auth_role tar ON tur.roleId = tar.id
+        WHERE
+            userId = #{userId}
+    </select>
+</mapper>
