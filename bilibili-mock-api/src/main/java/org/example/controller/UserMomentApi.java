@@ -6,6 +6,7 @@ import org.apache.rocketmq.remoting.exception.RemotingException;
 import org.example.Configs.AppConfig;
 import org.example.Constant.Constants;
 import org.example.annotation.ApiLimitRole;
+import org.example.annotation.DataLimit;
 import org.example.domain.JsonResponse;
 import org.example.domain.UserMoment;
 import org.example.helpers.UserVerifyTokenHelper;
@@ -31,9 +32,14 @@ public class UserMomentApi {
     @Autowired
     private UserVerifyTokenHelper userVerifyTokenHelper;
 
-    @ApiLimitRole(limitRoleCodeList = {Constants.ROLE_CODE_LV1})
+    @ApiLimitRole(limitRoleCodeList = {Constants.ROLE_CODE_LV0})
+    @DataLimit
     @PostMapping("/moments/add-moment")
-    public JsonResponse<String> addMoment(@RequestBody UserMoment userMoment) throws MQBrokerException, RemotingException, InterruptedException, MQClientException {
+    public JsonResponse<String> addMoment(@RequestBody UserMoment userMoment)
+            throws MQBrokerException,
+            RemotingException,
+            InterruptedException,
+            MQClientException {
         long userId;
         boolean developmentMode = appConfig.isDevelopment();
         if (developmentMode) {
@@ -50,7 +56,7 @@ public class UserMomentApi {
 
     // 获取用户关注的人的moment
     @GetMapping("/moments/get-user-subscribe-moment")
-    public JsonResponse<List<UserMoment>>getUserSubscribedMoment() {
+    public JsonResponse<List<UserMoment>> getUserSubscribedMoment() {
         long userId;
         boolean developmentMode = appConfig.isDevelopment();
         if (developmentMode) {

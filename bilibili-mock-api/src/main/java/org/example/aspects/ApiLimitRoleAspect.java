@@ -54,7 +54,6 @@ public class ApiLimitRoleAspect {
         }
 
         List<UserRole> userRoleList = userRoleService.getUserRoleByUserId(userId);
-        System.out.println("here");
         //获取到 外面穿进来的 limited Role list 的值
         String[] limitedRoleCodeList = apiLimitRole.limitRoleCodeList();
 
@@ -65,20 +64,16 @@ public class ApiLimitRoleAspect {
 
 
         // role code set 和 limited Role Code Set 求交集
-        try {
-            // 将数据库里获取的用户权限 list 变成 set
-            List<String> userRoleCodeList = userRoleList.stream().map(UserRole::getRoleCode).collect(Collectors.toList());
-            Set<String> userRoleCodeSet = userRoleCodeList.stream().collect(Collectors.toSet());
-            System.out.println("userRoleCodeSet = " + userRoleCodeSet);
-            System.out.println("limitedRoleCodeSet = " + limitedRoleCodeSet);
-            userRoleCodeSet.retainAll(limitedRoleCodeSet);
-        } catch (Exception e) {
-            System.out.println("e = " + e);
-            throw new ConditionException("intersection 错误");
+
+        // 将数据库里获取的用户权限 list 变成 set
+        List<String> userRoleCodeList = userRoleList.stream().map(UserRole::getRoleCode).collect(Collectors.toList());
+        Set<String> userRoleCodeSet = userRoleCodeList.stream().collect(Collectors.toSet());
+        System.out.println("userRoleCodeSet = " + userRoleCodeSet);
+        System.out.println("limitedRoleCodeSet = " + limitedRoleCodeSet);
+        userRoleCodeSet.retainAll(limitedRoleCodeSet);
+
+        if (userRoleCodeSet.size() > 0) {
+            throw new ConditionException("权限不足");
         }
-
-
     }
-
-
 }
