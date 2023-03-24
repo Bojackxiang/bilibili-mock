@@ -1,5 +1,6 @@
 package org.example.controller;
 
+import org.example.Configs.AppConfig;
 import org.example.constant.AuthErrorEnum;
 import org.example.domain.JsonResponse;
 import org.example.domain.User;
@@ -11,6 +12,10 @@ import org.example.utils.RSAUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import java.util.Map;
+
 @RestController
 public class UserApi {
 
@@ -19,6 +24,9 @@ public class UserApi {
 
     @Autowired
     private UserVerifyTokenHelper userVerifyTokenHelper;
+
+    @Autowired
+    private AppConfig appConfig;
 
     @GetMapping("/rsa-pks")
     public JsonResponse<String> rsaPks() {
@@ -80,5 +88,39 @@ public class UserApi {
         userService.updateUserInfo(userInfoInput);
         return JsonResponse.success();
     }
+
+    @PostMapping("/dps")
+    public JsonResponse<Map<String, Object>> loginForDps(@RequestBody User user) {
+        Map<String, Object> tokens = userService.loginForDps(user);
+        return new JsonResponse(tokens);
+    }
+
+    // 通过 httpseverletrequest 获取 请求头里面的信息
+    @DeleteMapping("/dps")
+    public JsonResponse<String> deleteDps(HttpServletRequest request) {
+        String refreshToken = request.getHeader("refreshToken");
+        Long userId = userVerifyTokenHelper.getCurrentUserIdByToken();
+        userService.logout(refreshToken, userId);
+        return JsonResponse.success();
+    }
+
+    @PostMapping("/access-token")
+    public JsonResponse<String> getAccessToken(HttpServletRequest request) {
+        long userId;
+        boolean developmentMode = appConfig.isDevelopment();
+        if (developmentMode) {
+            userId = 17;
+        } else {
+            userId = userVerifyTokenHelper.getCurrentUserIdByToken();
+        }
+
+        String refreshToken = request.getHeader("refreshToken");
+        String newAccessToken = userService.refreshAccessToken(refreshToken, userId);
+
+        return new JsonResponse(newAccessToken);
+    }
+
+
+
 
 }

@@ -20,8 +20,8 @@
         </if>
         updateTime = #{updateTime}
         where id = #{id}
-
     </update>
+
     <!---->
     <!--SELECT USER BY PHONE-->
     <!---->
@@ -108,4 +108,34 @@
         </if>
 
     </select>
+    <select id="getRefreshTokenByUserId"
+            parameterType="java.lang.Long"
+            resultType="org.example.domain.RefreshToken">
+
+        select * t_refresh_token
+        where userId = #{userId}
+
+    </select>
+    <select id="getRefreshToken"
+            parameterType="java.lang.String"
+            resultType="org.example.domain.RefreshToken">
+        select *
+        from t_refresh_token
+        where refreshToken = #{refreshToken}
+    </select>
+
+    <delete id="deleteUserRefreshToken">
+        delete
+        from t_refresh_token
+        where refreshToken = #{refreshToken}
+    </delete>
+
+    <insert id="addUserRefreshToken">
+        insert into t_refresh_token(refreshToken,
+                                    userId,
+                                    createTime)
+        values (#{refreshToken},
+                #{userId},
+                #{createTime})
+    </insert>
 </mapper>

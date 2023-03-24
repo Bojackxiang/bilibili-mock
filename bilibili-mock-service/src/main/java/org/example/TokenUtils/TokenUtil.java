@@ -57,4 +57,23 @@ public class TokenUtil {
 
 
     }
+
+    public static String generateRefreshToken(Long userId) {
+        Algorithm algorithm;
+        Calendar calendar = Calendar.getInstance();
+        try {
+            algorithm = Algorithm.RSA256(RSAUtil.getPublicKey(), RSAUtil.getPrivateKey());
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        calendar.setTime(new Date());
+        calendar.add(Calendar.DAY_OF_MONTH, 7);
+        Date expireDate = calendar.getTime();
+
+        return JWT.create()
+                .withKeyId(String.valueOf(userId))
+                .withIssuer(ISSUER)
+                .withExpiresAt(expireDate)
+                .sign(algorithm);
+    }
 }

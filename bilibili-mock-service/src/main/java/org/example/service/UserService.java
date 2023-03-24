@@ -5,6 +5,7 @@ import org.example.TokenUtils.TokenUtil;
 import org.example.constant.AuthErrorEnum;
 import org.example.constant.UserConstants;
 import org.example.domain.PageResults;
+import org.example.domain.RefreshToken;
 import org.example.domain.User;
 import org.example.dao.UserDao;
 import org.example.domain.UserInfo;
@@ -15,10 +16,7 @@ import org.example.utils.MD5Util;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Service
 public class UserService {
@@ -29,6 +27,55 @@ public class UserService {
     private UserInfoDao userInfoDao;
 
     public UserService() {
+    }
+
+    public Map<String, Object> loginForDps(User user) {
+        boolean validPhoneNumber = UserAuthHelper.validatePhone(user);
+        if (!validPhoneNumber) {
+            throw new ConditionException(
+                    AuthErrorEnum.AUTH_ERROR_INVALID_PHONE.getCode(),
+                    AuthErrorEnum.AUTH_ERROR_INVALID_PHONE.getMessage());
+        }
+
+        // HANDLE IF USER NOT EXISTED
+        User existedUser = UserAuthHelper.getUserByPhone(user, userDao);
+        if (existedUser == null) {
+            throw new ConditionException(
+                    AuthErrorEnum.AUTH_ERROR_USER_NOT_EXISTED.getCode(),
+                    AuthErrorEnum.AUTH_ERROR_USER_NOT_EXISTED.getMessage());
+        }
+
+        // COMPARE THE PASSWORD AND GENERATE THE TOKEN
+        String ra3wPassword = UserAuthHelper.parseUserPassword(user.getPassword());
+        String md5Password = MD5Util.sign(ra3wPassword, existedUser.getSalt(), "UTF-8");
+        if (!md5Password.equals(existedUser.getPassword())) {
+            throw new ConditionException(
+                    AuthErrorEnum.AUTH_ERROR_INVALID_PASSWORD.getCode(),
+                    AuthErrorEnum.AUTH_ERROR_INVALID_PASSWORD.getMessage());
+        }
+
+        // 生成马上要使用的 token 和 refresh token （refresh token 能够保存七天）
+        String accessToken = TokenUtil.generateToken(existedUser.getId());
+        String refreshToken = TokenUtil.generateRefreshToken(existedUser.getId());
+
+        // 将 refresh token 和 userId 一起存到 database 中
+        Map<String, Object> result = this.deleteAndSaveUserRefreshToken(existedUser.getId(), refreshToken, accessToken);
+
+        return result;
+    }
+
+    private Map<String, Object> deleteAndSaveUserRefreshToken(Long userId, String refreshToken, String accessToken) {
+        // DELETE user's user token
+        // ADD user's generate refresh token
+        userDao.deleteUserRefreshToken(refreshToken);
+        userDao.addUserRefreshToken(userId, refreshToken, new Date());
+
+        Map<String, Object> result = new HashMap<>();
+        result.put("refreshToken", refreshToken);
+        result.put("accessToken", accessToken);
+
+        return result;
+
     }
 
     public void createUser(User user) {
@@ -155,15 +202,30 @@ public class UserService {
 
         Integer total = userDao.pageCountUserInfo(params);
         List<UserInfo> userInfoList = new ArrayList<>();
-        if(total > 0) {
+        if (total > 0) {
             userInfoList = userInfoDao.pageListUserInfo(params);
         }
 
         return new PageResults<>(total, userInfoList);
 
 
+    }
 
 
+    public void logout(String refreshToken, Long userId) {
+        userDao.deleteUserRefreshToken(refreshToken);
+    }
 
+    public String refreshAccessToken(String refreshToken, long userId) {
+        RefreshToken refreshTokenDetail = userDao.getRefreshToken(refreshToken);
+        if(refreshTokenDetail == null){
+            throw new ConditionException(
+                    AuthErrorEnum.AUTH_ERROR_REFRESH_TOKEN_NOT_EXISTED.getCode(),
+                    AuthErrorEnum.AUTH_ERROR_REFRESH_TOKEN_NOT_EXISTED.getMessage());
+
+        }
+
+        Long refreshTokenUserId = refreshTokenDetail.getUserId();
+        return TokenUtil.generateRefreshToken(userId);
     }
 }
